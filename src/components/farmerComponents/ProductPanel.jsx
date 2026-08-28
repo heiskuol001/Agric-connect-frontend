@@ -5,6 +5,8 @@ const ProductPanel = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [notifications, setNotifications] = useState([]);
+
 
   useEffect(() => {
     const getProducts = async () => {
@@ -22,14 +24,11 @@ const ProductPanel = () => {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(
-            data.message || "Failed to fetch products"
-          );
+          throw new Error(data.message || "Failed to fetch products");
         }
 
         setProducts(data.products || data);
 
-        console.log("Products fetched successfully:", data);
       } catch (error) {
         console.error("Error fetching products:", error);
         setError(error.message);
@@ -39,6 +38,34 @@ const ProductPanel = () => {
     };
 
     getProducts();
+  }, []);
+
+  // Fetch notifications
+  useEffect(() => {
+    const getNotifications = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/product/api/product/notifications",
+          {
+            credentials: "include",
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(
+            data.message || "Failed to fetch notifications"
+          );
+        }
+
+        setNotifications(data.getNotified || []);
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    getNotifications();
   }, []);
 
   return (
@@ -111,8 +138,7 @@ const ProductPanel = () => {
                   </h3>
 
                   <p className="text-green-600 font-medium mt-1">
-                    UGX{" "}
-                    {Number(product.price).toLocaleString()}
+                    UGX {Number(product.price).toLocaleString()}
                   </p>
                 </div>
 
@@ -135,15 +161,48 @@ const ProductPanel = () => {
       {/* Notifications Section */}
       <div className="border border-gray-300 rounded-lg p-4">
 
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
-          Notifications
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold text-gray-800">
+            Notifications
+          </h2>
 
-        <div className="flex items-center justify-center py-10">
-          <p className="text-gray-500">
-            No new notifications
-          </p>
+          {notifications.length > 0 && (
+            <span className="text-sm text-gray-500">
+              {notifications.length}
+            </span>
+          )}
         </div>
+
+        {/* No notifications */}
+        {notifications.length === 0 && (
+          <div className="flex items-center justify-center py-10">
+            <p className="text-gray-500">
+              No new notifications
+            </p>
+          </div>
+        )}
+
+        {/* Notifications */}
+        {notifications.length > 0 && (
+          <div className="space-y-3">
+            {notifications.map((notification) => (
+              <div
+                key={notification._id}
+                className="border border-gray-200 rounded-lg p-3 bg-gray-50"
+              >
+                <p className="text-sm text-gray-700">
+                  {notification.message}
+                </p>
+
+                <p className="text-xs text-gray-400 mt-2">
+                  {new Date(
+                    notification.createdAt
+                  ).toLocaleString()}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
 
       </div>
 
@@ -151,4 +210,4 @@ const ProductPanel = () => {
   );
 };
 
-export default ProductPanel;
+export default ProductPanel
