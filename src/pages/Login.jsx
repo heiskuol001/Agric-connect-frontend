@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "../context/AuthContext.jsx"
 import { logInApi } from '../API/Api.js'
 import { useNavigate } from "react-router-dom";
 import pics from "../utils/photo.js";
@@ -12,6 +13,8 @@ const Login = () => {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [location, setLocation] = useState('')
 
+  const {setUser} = useContext(AuthContext)
+
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -19,6 +22,8 @@ const Login = () => {
 
   try {
     const data = await logInApi(email, password);
+
+    setUser(data.user)
 
     console.log("Login response:", data);
     navigate('/farmer/dashboard')
