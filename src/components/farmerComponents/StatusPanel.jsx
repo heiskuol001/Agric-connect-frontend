@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Clock from './Clock'
 import { useContext } from 'react'
 import { AuthContext } from '../../context/AuthContext'
+import pics from '../../utils/photo'
 
 const StatusPanel = () => {
   const [productCount, setProductCount] = useState(0)
@@ -60,7 +61,7 @@ const StatusPanel = () => {
       {/* Product card */}
       <div className="flex items-center gap-3 rounded-xl bg-blue-50 px-5 py-3 border border-blue-100">
         <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-blue-500 text-white">
-          📦
+          <img src={pics[16]} className='h-11 w-11' />
         </div>
 
         <div>
