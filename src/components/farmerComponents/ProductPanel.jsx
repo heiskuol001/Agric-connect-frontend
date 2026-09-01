@@ -7,6 +7,28 @@ const ProductPanel = () => {
   const [error, setError] = useState("");
   const [notifications, setNotifications] = useState([]);
 
+  const handleDeleteProduct = async (productId) => {
+    try {
+      const response = await fetch(`http://localhost:3000/product/api/delete/${productId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId }),
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete product");
+      }
+
+      // Remove the deleted product from the state
+      setProducts(products.filter((p) => p._id !== productId));
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      setError(error.message);
+    }
+  };
 
   useEffect(() => {
     const getProducts = async () => {
@@ -146,7 +168,7 @@ const ProductPanel = () => {
                 <button
                   type="button"
                   onClick={() =>
-                    console.log("Delete:", product._id)
+                    handleDeleteProduct(product._id)
                   }
                   className="shrink-0 px-3 py-2 text-sm font-medium text-red-600 border border-red-200 rounded-lg hover:bg-red-50 transition"
                 >
