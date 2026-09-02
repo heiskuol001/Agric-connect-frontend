@@ -17,20 +17,33 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+const handleLogin = async (e) => {
   e.preventDefault();
 
   try {
     const data = await logInApi(email, password);
 
-    setUser(data.user)
-
     console.log("Login response:", data);
-    navigate('/farmer/dashboard')
+
+    if (!data?.user) {
+      console.error("User data was not returned");
+      return;
+    }
+
+    setUser(data.user);
+
+    if (data.user.role === "farmer") {
+      navigate("/farmer/dashboard");
+    } else if (data.user.role === "buyer") {
+      navigate("/marketplace");
+    } else {
+      console.error("Unknown user role:", data.user.role);
+    }
+
   } catch (error) {
-    console.error(error);
+    console.error("Login error:", error);
   }
-  };
+};
 
  const handleAccountRegistration = async (e) => {
   e.preventDefault();
