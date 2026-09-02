@@ -1,9 +1,17 @@
-import React from 'react'
+import Hero from '../components/Hero'
+import SubHero from '../components/SubHero'
+import ContentOne from '../components/ContentOne'
+import ExpertSection from '../components/ExpertSection'
+import ContentTwo from '../components/ContentTwo'
 
 const Home = () => {
   return (
-    <div className='h-screen w-full flex justify-center items-center'>
-      <h1>Home</h1>
+    <div className='min-h-screen w-full bg-slate-50'>
+      <Hero />
+      <SubHero />
+      <ContentOne />
+      <ContentTwo />
+      <ExpertSection />
     </div>
   )
 }
